@@ -1,13 +1,19 @@
 pluginManagement {
 	repositories {
+		maven {
+			url 'https://maven.aliyun.com/repository/public/'
+		}
+		mavenLocal() //先从本地仓库中获取
 		gradlePluginPortal()
+/*
 		maven { url 'https://repo.spring.io/plugins-release' }
+*/
 	}
 }
 
 plugins {
 	id "com.gradle.enterprise" version "3.2"
-	id "io.spring.gradle-enterprise-conventions" version "0.0.2"
+/*	id "io.spring.gradle-enterprise-conventions" version "0.0.2"*/
 }
 
 include "spring-aop"

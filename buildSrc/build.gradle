@@ -3,6 +3,8 @@ plugins {
 }
 
 repositories {
+	maven {url 'https://maven.aliyun.com/repository/public/'}
+	mavenLocal() //先从本地仓库中获取
 	mavenCentral()
 	gradlePluginPortal()
 }
