@@ -168,7 +168,8 @@ public abstract class StringUtils {
 	private static boolean containsText(CharSequence str) {
 		int strLen = str.length();
 		for (int i = 0; i < strLen; i++) {
-			if (!Character.isWhitespace(str.charAt(i))) {
+			// (i) 获取char的ask码
+			if (!Character.isWhitespace(str.charAt(i))) {//是否是空白的字符串
 				return true;
 			}
 		}

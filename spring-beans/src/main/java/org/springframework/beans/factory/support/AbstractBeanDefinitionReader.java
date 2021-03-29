@@ -108,6 +108,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 
 	@Override
 	public final BeanDefinitionRegistry getRegistry() {
+		//org.springframework.beans.factory.xml.XmlBeanFactory
 		return this.registry;
 	}
 
@@ -129,6 +130,7 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 	@Override
 	@Nullable
 	public ResourceLoader getResourceLoader() {
+		//org/springframework/beans/factory/xml/XmlBeanFactory.java:57 初始化XmlBeanDefinitionReader
 		return this.resourceLoader;
 	}
 

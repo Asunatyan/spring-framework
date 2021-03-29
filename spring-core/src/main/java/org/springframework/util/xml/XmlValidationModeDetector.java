@@ -75,11 +75,13 @@ public class XmlValidationModeDetector {
 
 	/**
 	 * Indicates whether or not the current parse position is inside an XML comment.
+	 * 显示当前解析位置是否在一个XML注释。
 	 */
 	private boolean inComment;
 
 
 	/**
+	 * 通过指定的 inputStream 来检测 XML 中的验证模型
 	 * Detect the validation mode for the XML document in the supplied {@link InputStream}.
 	 * Note that the supplied {@link InputStream} is closed by this method before returning.
 	 * @param inputStream the InputStream to parse
@@ -91,13 +93,16 @@ public class XmlValidationModeDetector {
 		// Peek into the file to look for DOCTYPE.
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
+			//是否是DTD验证模式 ，默认否
 			boolean isDtdValidated = false;
 			String content;
 			while ((content = reader.readLine()) != null) {
 				content = consumeCommentTokens(content);
+				// 如果是注释或者为空这跳过
 				if (this.inComment || !StringUtils.hasText(content)) {
-					continue;
+					continue;//是注释 或者是空白字符串
 				}
+				//是否包含 DOCTYPE
 				if (hasDoctype(content)) {
 					isDtdValidated = true;
 					break;
@@ -107,7 +112,7 @@ public class XmlValidationModeDetector {
 					break;
 				}
 			}
-			return (isDtdValidated ? VALIDATION_DTD : VALIDATION_XSD);
+			return (isDtdValidated ? VALIDATION_DTD : VALIDATION_XSD);//校验是否是xsd或者是dtd
 		}
 		catch (CharConversionException ex) {
 			// Choked on some character encoding...
@@ -132,12 +137,17 @@ public class XmlValidationModeDetector {
 	 * in an XML comment then this method always returns false. It is expected that all comment
 	 * tokens will have consumed for the supplied content before passing the remainder to this method.
 	 */
+	//hasOpeningTag("<    beans xmlns=\"http://www.springframework.org/schema/beans\"") 有空格就是false了
 	private boolean hasOpeningTag(String content) {
 		if (this.inComment) {
 			return false;
 		}
-		int openTagIndex = content.indexOf('<');
+		int openTagIndex = content.indexOf('<');//"<" 开头 并且第二个字符是字母
 		return (openTagIndex > -1 && (content.length() > openTagIndex + 1) &&
+				//static boolean isLetter(char ch)
+				//确定指定的字符是否是一个字母。
+				//static boolean	isLetter(int codePoint)
+				//确定指定的字符（Unicode代码点）是否是一个字母
 				Character.isLetter(content.charAt(openTagIndex + 1)));
 	}
 
@@ -149,11 +159,13 @@ public class XmlValidationModeDetector {
 	 */
 	@Nullable
 	private String consumeCommentTokens(String line) {
+		//  如果没有带<!-- 或 -->的直接返回内容
 		if (!line.contains(START_COMMENT) && !line.contains(END_COMMENT)) {
 			return line;
 		}
 		String currLine = line;
 		while ((currLine = consume(currLine)) != null) {
+			//没有在注释中或者不是由注释开头的返回内容,inComment的这个标识位表示当前是否在注释中
 			if (!this.inComment && !currLine.trim().startsWith(START_COMMENT)) {
 				return currLine;
 			}
@@ -167,6 +179,7 @@ public class XmlValidationModeDetector {
 	 */
 	@Nullable
 	private String consume(String line) {
+		//第一次进去inComment为False
 		int index = (this.inComment ? endComment(line) : startComment(line));
 		return (index == -1 ? null : line.substring(index));
 	}
@@ -189,9 +202,10 @@ public class XmlValidationModeDetector {
 	 * which is after the token or -1 if the token is not found.
 	 */
 	private int commentToken(String line, String token, boolean inCommentIfPresent) {
+		//line  <!--  true
 		int index = line.indexOf(token);
 		if (index > - 1) {
-			this.inComment = inCommentIfPresent;
+			this.inComment = inCommentIfPresent;//如果大于一标识是一个注释 那么inCommentIfPresent = true
 		}
 		return (index == -1 ? index : index + token.length());
 	}
